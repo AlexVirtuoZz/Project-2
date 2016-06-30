@@ -9,19 +9,14 @@ import java.util.List;
 public class Sentence {
     private List<Word> words = new LinkedList();
 
-    public Sentence(List<String> words) {
-        stringToSentence(words);
+    public Sentence(List<Word> words) {
+        this.words = words;
     }
 
     public List<Word> getWords() {
         return words;
     }
 
-    public void stringToSentence(List<String> stringList){
-        for (String s : stringList){
-            words.add(new Word(s));
-        }
-    }
     @Override
     public String toString(){
         StringBuffer stringBuffer = new StringBuffer();

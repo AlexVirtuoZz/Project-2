@@ -2,6 +2,7 @@ package controller;
 
 import entities.Sentence;
 import entities.Word;
+import entities.WordFactory;
 import view.Regex;
 
 import java.io.*;
@@ -15,7 +16,8 @@ import java.util.regex.Pattern;
 public class Parser {
 
     private List<Sentence> sentences = new LinkedList<>();
-    private Set<Word> words = new LinkedHashSet<>();
+    private Set<Word> words = new HashSet<>();
+    private WordFactory wordFactory = new WordFactory();
     private String textProperty;
     private String wordProperties;
     private String text;
@@ -32,9 +34,9 @@ public class Parser {
         return text;
     }
 
-    public List<String> split(String text, String delimiter){
+    public List<String> split(String text, String regex){
         List<String> temp = new LinkedList<>();
-        Pattern pattern = Pattern.compile(delimiter);
+        Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         int start = 0;
         int finish;
@@ -90,22 +92,24 @@ public class Parser {
         return text.replaceAll(Regex.CODE_DELIMETERS, "");
     }
 
+    public void parseText() throws IOException{
+        text = readFromFile(textProperty);
+    }
+
     public void parseSentences() throws IOException {
-        List<String> temp = split(cleanText(readFromFile(textProperty)), Regex.SENTENCE_DELIMETERS);
-        StringBuffer tmp =  new StringBuffer();
-        for (Sentence sentence : sentences){
-            tmp.append(sentence.toString());
-        }
-        text = tmp.toString();
+        List<String> temp = split(cleanText(text), Regex.SENTENCE_DELIMETERS);
         for (String sent: temp){
-            sentences.add(new Sentence(split(sent, Regex.WORDS_DELIMETERS)));
+            List<Word> local = new LinkedList<>();
+            for (String word : sent.split(Regex.WORDS_DELIMETERS))
+                local.add(wordFactory.getWord(word));
+            sentences.add(new Sentence(local));
         }
     }
 
     public void parseWords() throws IOException {
         List<String> temp = split(readFromFile(wordProperties), Regex.WORDS_DELIMETERS);
         for (String word : temp){
-            words.add(new Word(word));
+            words.add(wordFactory.getWord(word));
         }
     }
 

@@ -17,8 +17,9 @@ public class Controller {
         try {
             parser.readProperties();
             view.print(view.ENTIRE_TEXT);
-            parser.parseSentences();
+            parser.parseText();
             view.print(parser.getText());
+            parser.parseSentences();
             view.print(view.ENTIRE_WORDS);
             parser.parseWords();
             for (Word word : parser.getWords())
@@ -37,7 +38,8 @@ public class Controller {
             view.print(w.toString());
     }
 
-    void countWord(Word word){
+    //Utility methods
+    private void countWord(Word word){
         int sentenceCounter = 0;
         for (Sentence sentence : parser.getSentences()){
             sentenceCounter++;
