@@ -1,16 +1,21 @@
 package main;
 
 import controller.Controller;
+import controller.Parser;
+import view.View;
 
 import java.io.IOException;
 
 /**
- * Created by HomePC1 on 29.06.2016.
+ * Main class to run a program
+ * Create and initialize parser, view, controller objects
+ * run controller process() method
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-
-        Controller controller = new Controller();
+        Parser parser = new Parser();
+        View view = new View();
+        Controller controller = new Controller(parser, view);
         controller.process();
 
     }

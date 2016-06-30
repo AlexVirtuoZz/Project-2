@@ -11,10 +11,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by HomePC1 on 29.06.2016.
+ * A class to parse text
  */
 public class Parser {
-
+    /**
+     * sentences - list of sentences from text
+     * words - list of words to parse text
+     * wordFactory - an object to keep words
+     * textProperty - property to get entire text file
+     * wordProperties - property to get entire word list
+     * text - entire text to parse
+     */
     private List<Sentence> sentences = new LinkedList<>();
     private Set<Word> words = new HashSet<>();
     private WordFactory wordFactory = new WordFactory();
@@ -22,6 +29,7 @@ public class Parser {
     private String wordProperties;
     private String text;
 
+    //Getters and setters
     public Set<Word> getWords() {
         return words;
     }
@@ -34,6 +42,13 @@ public class Parser {
         return text;
     }
 
+    /**
+     * A method to split text by required regex
+     * While text matches regex - divide text into list of strings
+     * @param text text to parse
+     * @param regex condition to parse text
+     * @return divided text into string array
+     */
     public List<String> split(String text, String regex){
         List<String> temp = new LinkedList<>();
         Pattern pattern = Pattern.compile(regex);
@@ -53,16 +68,28 @@ public class Parser {
         return temp;
     }
 
+    /**
+     * A method to get text file to read from
+     * @throws IOException if problems occur while reading
+     */
     public void readProperties() throws IOException {
         File file = new File("file.properties");
-        FileInputStream fileInput = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(file);
         Properties properties = new Properties();
-        properties.load(fileInput);
+        properties.load(fileInputStream);
         textProperty = properties.getProperty("input_text");
         wordProperties = properties.getProperty("input_words");
-        fileInput.close();
+        fileInputStream.close();
     }
 
+    /**
+     * A method to read text from file
+     * Create and try to initialize required readers
+     * While there are lines to read - append it to stringBuffer
+     * @param from file path to read from
+     * @return entire text from file
+     * @throws IOException if problems occur while reading from file
+     */
     public String readFromFile(String from) throws IOException {
         FileReader fr = null;
         BufferedReader br = null;
@@ -88,15 +115,29 @@ public class Parser {
         return fileValue.toString();
     }
 
+    /**
+     * A method to clean entire text from code
+     * @param text - entire text
+     * @return text without code
+     */
     public String cleanText(String text){
         return text.replaceAll(Regex.CODE_DELIMETERS, "");
     }
 
+    /**
+     * A method to read entire text from file
+     * @throws IOException if problems occur while reading from file
+     */
     public void parseText() throws IOException{
         text = readFromFile(textProperty);
     }
 
-    public void parseSentences() throws IOException {
+    /**
+     * A method to divide entire text into sentences
+     * Split entire text into String array (temporary sentences)
+     * For each string - divide it into words and add to sentences list
+     */
+    public void parseSentences() {
         List<String> temp = split(cleanText(text), Regex.SENTENCE_DELIMETERS);
         for (String sent: temp){
             List<Word> local = new LinkedList<>();
@@ -106,6 +147,12 @@ public class Parser {
         }
     }
 
+    /**
+     * A method to read word list from file
+     * Read word list into array of strings
+     * Convert each into word
+     * @throws IOException if problems occur while reading from file
+     */
     public void parseWords() throws IOException {
         List<String> temp = split(readFromFile(wordProperties), Regex.WORDS_DELIMETERS);
         for (String word : temp){
@@ -113,6 +160,12 @@ public class Parser {
         }
     }
 
+    /**
+     * A method to sort words
+     * Convert set into array list
+     * Use standard Collections.sort() method
+     * convert back into linked hash set to keep words sorted
+     */
     void sortWords(){
         ArrayList<Word> tmp = new ArrayList<>(words);
         Collections.sort(tmp);
