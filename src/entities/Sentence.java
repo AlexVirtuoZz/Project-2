@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * A class representing Sentence
  */
-public class Sentence {
+public class Sentence implements Text {
     /**
      * words - list of words, included in a sentence
      */

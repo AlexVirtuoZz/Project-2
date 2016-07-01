@@ -1,5 +1,6 @@
 package controller;
 
+import entities.CounterWordDecorator;
 import entities.Sentence;
 import entities.Word;
 import view.View;
@@ -37,7 +38,7 @@ public class Controller {
      * parse words from file
      * print entire word list
      * obtain word \ sentence and word \ text info
-     * @see #countWord(Word)
+     * @see #countWord(CounterWordDecorator)
      * sort words and print sorted list of words
      * @exception IOException - if occur - display appropriate message and exit program
      */
@@ -57,14 +58,12 @@ public class Controller {
             System.exit(0);
         }
         view.print(view.PARSING_WORDS);
-        for (Word word : parser.getWords()){
+        parser.decorateWordsByCounter();
+        for (CounterWordDecorator word : parser.getDecoratedWordsByCounter())
             countWord(word);
-        }
-
-        parser.sortWords();
-        view.print(view.SORTED_WORDS);
-        for (Word w : parser.getWords())
-            view.print(w.toString());
+        parser.sortDecoratedWords();
+        for (Word word : parser.getDecoratedWordsByCounter())
+            view.print(word.toString());
     }
 
     //Utility methods
@@ -73,11 +72,12 @@ public class Controller {
      * A method to get word \ sentence and word \ text info
      * for each sentence - search if specified word and any word in sentence are equals
      * if such words found - increase counter of specified word
+     * for each iteration of sentence set word sentence counter to zero
      * print, how many specified words were found in every sentence
      * print, how many specified words were found in entire text
      * @param word specified word
      */
-    private void countWord(Word word){
+    private void countWord(CounterWordDecorator word){
         int sentenceCounter = 0;
         for (Sentence sentence : parser.getSentences()){
             sentenceCounter++;
@@ -86,8 +86,9 @@ public class Controller {
                     word.increase();
                 }
             }
-            view.printWithCount(word.toString(), word.getCounter(), sentenceCounter);
+            view.printWithCount(word.toString(), word.getSentenceCounter(), sentenceCounter);
+            word.newSentence();
         }
-        view.printWithEntireCount(word.toString(), word.getCounter());
+        view.printWithEntireCount(word.toString(), word.getEntireCounter());
     }
 }

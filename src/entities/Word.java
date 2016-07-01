@@ -1,16 +1,15 @@
 package entities;
 
+
 /**
  * A class representing word
- * implements {@link Comparable} to be sorted
+ * implements {@link Text}
  */
-public class Word implements Comparable{
+public class Word implements Text {
     /**
      * value - word's text value
-     * counter - number of occurrences
      */
     private String value;
-    private int counter;
 
     /**
      * Constructor with value
@@ -22,17 +21,15 @@ public class Word implements Comparable{
 
     //Getters and setters
 
-    public int getCounter() {
-        return counter;
-    }
     //Utility methods
-
     /**
-     * A method to increase word's counter
+     * A method to convert standard word into decorated one
+     * @return decorated word
      */
-    public void increase(){
-        counter++;
+    public CounterWordDecorator decorateByCount(){
+        return new CounterWordDecorator(this.value);
     }
+
     //Overridden methods
 
     /**
@@ -61,25 +58,13 @@ public class Word implements Comparable{
     }
 
     /**
-     * A method to compare words
-     * Used to sort the words by number of occurrences
-     * @param o is specified word to compare
-     * @return counter difference
-     */
-    @Override
-    public int compareTo(Object o) {
-        Word temp = (Word) o;
-        return temp.getCounter() - this.getCounter();
-    }
-
-    /**
      * A method to correctly determine word hashcode
      * @return word hashcode
      */
     @Override
     public int hashCode() {
         int result = value.hashCode();
-        result = 31 * result + counter;
+        result = 31 * result;
         return result;
     }
 }

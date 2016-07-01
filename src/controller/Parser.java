@@ -1,5 +1,6 @@
 package controller;
 
+import entities.CounterWordDecorator;
 import entities.Sentence;
 import entities.Word;
 import entities.WordFactory;
@@ -24,12 +25,17 @@ public class Parser {
      */
     private List<Sentence> sentences = new LinkedList<>();
     private Set<Word> words = new HashSet<>();
+    private LinkedList decoratedWordsByCounter;
     private WordFactory wordFactory = new WordFactory();
     private String textProperty;
     private String wordProperties;
     private String text;
 
     //Getters and setters
+    public List<CounterWordDecorator> getDecoratedWordsByCounter() {
+        return decoratedWordsByCounter;
+    }
+
     public Set<Word> getWords() {
         return words;
     }
@@ -164,11 +170,19 @@ public class Parser {
      * A method to sort words
      * Convert set into array list
      * Use standard Collections.sort() method
-     * convert back into linked hash set to keep words sorted
+     * @return linked hash set to keep words sorted
      */
-    void sortWords(){
-        ArrayList<Word> tmp = new ArrayList<>(words);
-        Collections.sort(tmp);
-        words = new LinkedHashSet<>(tmp);
+    public void sortDecoratedWords(){
+        Collections.sort(decoratedWordsByCounter);
+    }
+
+    /**
+     * A method to decorate list of standard words into decorated words
+     */
+    void decorateWordsByCounter(){
+        decoratedWordsByCounter = new LinkedList<>();
+        for (Word word : words){
+            decoratedWordsByCounter.add(word.decorateByCount());
+        }
     }
 }
